@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en" class="is-loading">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hardline — A Case Study of Bikes</title>
+    <meta
+      name="description"
+      content="Hardline is an experimental exhibition about motorcycles: the machinery, the craft, and the people who refuse to ride anything ordinary."
+    />
+    <meta name="theme-color" content="#0b0a09" />
+    <meta property="og:title" content="Hardline — A Case Study of Bikes" />
+    <meta
+      property="og:description"
+      content="Four ways to ride. One line between rider and machine."
+    />
+    <meta property="og:image" content="media/herobg.webp" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preload" as="image" href="media/herobg.webp" type="image/webp" />
+
+    <!-- Styles: plain CSS files, no build step -->
+    <link rel="stylesheet" href="src/styles/base.css" />
+    <link rel="stylesheet" href="src/styles/chrome.css" />
+    <link rel="stylesheet" href="src/styles/hero-philo.css" />
+    <link rel="stylesheet" href="src/styles/ways.css" />
+    <link rel="stylesheet" href="src/styles/culture-finale.css" />
+
+    <!-- Libraries are vendored locally (vendor/) and mapped to bare names,
+         so the source can `import { gsap } from 'gsap'` with no bundler. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "gsap": "./vendor/gsap/index.js",
+          "gsap/ScrollTrigger": "./vendor/gsap/ScrollTrigger.js",
+          "gsap/SplitText": "./vendor/gsap/SplitText.js",
+          "three": "./vendor/three/three.module.min.js",
+          "lenis": "./vendor/lenis/lenis.mjs"
+        }
+      }
+    </script>
+    <link rel="modulepreload" href="vendor/gsap/gsap-core.js" />
+    <link rel="modulepreload" href="vendor/three/three.module.min.js" />
+    <script>
+      // Flag capabilities before first paint so CSS never flashes the wrong state.
+      (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        try {
+          var c = document.createElement("canvas");
+          if (!(c.getContext("webgl2") || c.getContext("webgl")))
+            d.classList.add("no-webgl");
+        } catch (e) {
+          d.classList.add("no-webgl");
+        }
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+          d.classList.add("reduced-motion");
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- 00 — IGNITION ------------------------------------------------------>
+    <div class="loader" aria-hidden="true">
+      <div class="loader__top">
+        <span>Hardline</span><span>Case file N°&nbsp;001</span>
+      </div>
+      <div class="loader__count">
+        <span class="loader__num">000</span><span class="loader__unit">%</span>
+      </div>
+      <div class="loader__gauge"><span class="loader__fill"></span></div>
+      <div class="loader__bottom">
+        <span>Ignition</span><span class="loader__status">Warming up</span>
+      </div>
+    </div>
+
+    <canvas class="gl" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- NAVIGATION ----------------------------------------------------------->
+    <header class="bar">
+      <a
+        class="bar__mark"
+        href="#top"
+        aria-label="Hardline — back to the start"
+      >
+        <span class="bar__glyph" aria-hidden="true"></span>Hardline
+      </a>
+      <p class="bar__chapter" aria-hidden="true">
+        <span class="bar__num">01</span>
+        <span class="bar__name-wrap"
+          ><span class="bar__name">Hardline</span></span
+        >
+      </p>
+      <button
+        class="bar__menu"
+        type="button"
+        aria-expanded="false"
+        aria-controls="index-panel"
+      >
+        <span class="bar__menu-label">Index</span>
+        <span class="bar__menu-icon" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </header>
+
+    <nav id="index-panel" class="index" aria-label="Chapters" inert>
+      <div class="index__inner">
+        <p class="index__eyebrow mono">Contents / five chapters</p>
+        <ol class="index__list">
+          <li>
+            <a href="#top" data-roll
+              ><span class="index__n mono">01</span
+              ><span class="index__t">Hardline</span></a
+            >
+          </li>
+          <li>
+            <a href="#philosophy" data-roll
+              ><span class="index__n mono">02</span
+              ><span class="index__t">Philosophy</span></a
+            >
+          </li>
+          <li>
+            <a href="#ways" data-roll
+              ><span class="index__n mono">03</span
+              ><span class="index__t">Four Ways</span></a
+            >
+          </li>
+          <li>
+            <a href="#culture" data-roll
+              ><span class="index__n mono">04</span
+              ><span class="index__t">Culture</span></a
+            >
+          </li>
+          <li>
+            <a href="#finale" data-roll
+              ><span class="index__n mono">05</span
+              ><span class="index__t">The Line</span></a
+            >
+          </li>
+        </ol>
+        <div class="index__foot mono">
+          <span>Bobber · Café Racer · Tracker · Chopper</span>
+          <span>Esc to close</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="rail" aria-hidden="true"><span class="rail__fill"></span></div>
+
+    <main id="main">
+      <!-- 01 — HERO ---------------------------------------------------------->
+      <section
+        class="hero"
+        id="top"
+        data-chapter="01"
+        data-chapter-name="Hardline"
+        aria-labelledby="hero-title"
+      >
+        <div class="hero__frame">
+          <img
+            class="hero__plate"
+            src="media/herobg.webp"
+            srcset="media/herobg-sm.webp 900w, media/herobg.webp 1672w"
+            sizes="100vw"
+            width="1672"
+            height="941"
+            alt="A blacked-out bobber parked on wet asphalt, half swallowed by drifting smoke and mountain fog."
+          />
+          <div class="hero__inner">
+            <p class="hero__kicker mono" data-hero-in>
+              <span>Case study N°&nbsp;001</span
+              ><span>Subject: the motorcycle</span>
+            </p>
+            <h1 class="hero__title" id="hero-title">
+              <span class="sr-only">Hardline</span>
+              <span class="hero__word" aria-hidden="true">Hardline</span>
+            </h1>
+            <div class="hero__row">
+              <p class="hero__sub" data-hero-in>
+                A case study of bikes<br />
+                <em class="serif"
+                  >and of the people who refuse to ride anything ordinary.</em
+                >
+              </p>
+              <dl class="hero__coords mono" data-hero-in>
+                <div>
+                  <dt>Road</dt>
+                  <dd>Open</dd>
+                </div>
+                <div>
+                  <dt>Weather</dt>
+                  <dd>Smoke &amp; fog</dd>
+                </div>
+                <div>
+                  <dt>Pace</dt>
+                  <dd>Yours</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          <div class="hero__horizon" aria-hidden="true"></div>
+          <p class="hero__cue mono" aria-hidden="true">
+            <span class="hero__cue-line"></span>Scroll to ride in
+          </p>
+        </div>
+      </section>
+
+      <!-- 02 — PHILOSOPHY --------------------------------------------------->
+      <section
+        class="philo"
+        id="philosophy"
+        data-chapter="02"
+        data-chapter-name="Philosophy"
+        aria-labelledby="philo-title"
+      >
+        <div class="philo__head wrap">
+          <p class="eyebrow mono">
+            <span class="eyebrow__n">02</span> The Philosophy
+          </p>
+          <h2 class="philo__statement" id="philo-title" data-illuminate>
+            A motorcycle is not how you get somewhere. It is how you become
+            <em class="serif philo__key"
+              >someone<span
+                class="philo__underline"
+                aria-hidden="true"
+              ></span></em
+            >.
+          </h2>
+          <div class="philo__cols">
+            <p data-reveal>
+              Four wheels shelter you. Two expose you to the weather, to
+              consequence, to every change in the road surface carried up
+              through the bars and into your wrists. Nobody rides for
+              efficiency. They ride because, for as long as the engine turns,
+              there is nowhere to hide from being alive.
+            </p>
+            <p data-reveal>
+              Hardline studies that exposure: the machines people build to meet
+              it, the craft poured into every bracket and weld, and the quiet,
+              stubborn individuality of riders who would rather build than buy.
+            </p>
+          </div>
+        </div>
+
+        <div class="valley" aria-label="Three axioms">
+          <div class="valley__media" aria-hidden="true">
+            <img
+              class="valley__bg"
+              src="media/philobg.webp"
+              srcset="media/philobg-sm.webp 900w, media/philobg.webp 1672w"
+              sizes="100vw"
+              width="1672"
+              height="941"
+              alt=""
+              loading="lazy"
+            />
+            <img
+              class="valley__mist valley__mist--l"
+              src="media/mist-left.webp"
+              width="1000"
+              height="1124"
+              alt=""
+              loading="lazy"
+            />
+            <img
+              class="valley__mist valley__mist--r"
+              src="media/mist-right.webp"
+              width="1000"
+              height="1122"
+              alt=""
+              loading="lazy"
+            />
+            <div class="valley__shade"></div>
+          </div>
+          <ol class="axioms">
+            <li class="axiom axiom--1">
+              <span class="axiom__n mono">I.</span>
+              <h3 class="axiom__t">Machine</h3>
+              <p>
+                Steel, fire, and thousands of controlled explosions every
+                minute. Nothing hidden. Nothing on the bike is only decoration;
+                it also has to work.
+              </p>
+            </li>
+            <li class="axiom axiom--2">
+              <span class="axiom__n mono">II.</span>
+              <h3 class="axiom__t">Craft</h3>
+              <p>
+                Somebody chose the angle of that fork. Somebody laid that
+                pinstripe by hand. A custom motorcycle is a record of a thousand
+                decisions.
+              </p>
+            </li>
+            <li class="axiom axiom--3">
+              <span class="axiom__n mono">III.</span>
+              <h3 class="axiom__t">Self</h3>
+              <p>
+                No two riders sit the same way. Give it enough years, and no two
+                bikes do either.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- INTERLUDE ---------------------------------------------------------->
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__row marquee__row--a">
+          <span>No two alike</span><span class="o">Built not bought</span
+          ><span>No two alike</span><span class="o">Built not bought</span
+          ><span>No two alike</span><span class="o">Built not bought</span>
+        </div>
+        <div class="marquee__row marquee__row--b">
+          <span class="o">Ride your own line</span
+          ><span>Ride your own line</span
+          ><span class="o">Ride your own line</span
+          ><span>Ride your own line</span
+          ><span class="o">Ride your own line</span>
+        </div>
+      </div>
+
+      <!-- 03 — FOUR WAYS TO RIDE ------------------------------------------->
+      <section
+        class="ways"
+        id="ways"
+        data-chapter="03"
+        data-chapter-name="Four Ways"
+        aria-labelledby="ways-title"
+      >
+        <div class="ways__intro wrap">
+          <p class="eyebrow mono">
+            <span class="eyebrow__n">03</span> Four Ways to Ride
+          </p>
+          <h2 class="ways__title" id="ways-title" data-split>
+            Same two wheels. <em class="serif">Four</em> entirely different
+            arguments.
+          </h2>
+          <p class="ways__how" data-reveal>
+            How to read the plates: each is a photograph from the Hardline
+            archive. Field notes describe only what is visible in the image.
+            Readings are our opinion of the style, not factory figures.
+          </p>
+        </div>
+
+        <div class="stage" data-stage>
+          <div class="stage__pin">
+            <div class="stage__top">
+              <p class="stage__count mono">
+                <span>Plate</span> <span class="stage__cur">01</span> / 04
+              </p>
+              <div class="stage__tabs" role="group" aria-label="Jump to plate">
+                <button
+                  type="button"
+                  class="stage__tab is-active"
+                  data-goto="0"
+                  aria-pressed="true"
+                >
+                  <span>Bobber</span>
+                </button>
+                <button
+                  type="button"
+                  class="stage__tab"
+                  data-goto="1"
+                  aria-pressed="false"
+                >
+                  <span>Café Racer</span>
+                </button>
+                <button
+                  type="button"
+                  class="stage__tab"
+                  data-goto="2"
+                  aria-pressed="false"
+                >
+                  <span>Tracker</span>
+                </button>
+                <button
+                  type="button"
+                  class="stage__tab"
+                  data-goto="3"
+                  aria-pressed="false"
+                >
+                  <span>Chopper</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Plates: DOM is the accessible source of truth; WebGL paints the machines. -->
+            <article
+              class="plate is-active"
+              data-plate="0"
+              data-src="media/bobber.webp"
+              data-src-sm="media/bobber-sm.webp"
+              data-aspect="1.9975"
+              data-name="BOBBER"
+            >
+              <img
+                class="plate__img"
+                src="media/bobber.webp"
+                width="1600"
+                height="801"
+                loading="lazy"
+                alt="Plate 01, the bobber: a low motorcycle with a blue fuel tank, a single floating saddle, a cut-short rear fender and fat spoked tyres, photographed in side profile."
+              />
+              <header class="plate__head">
+                <p class="plate__era mono">Post-war America → now</p>
+                <h3 class="plate__name">Bobber</h3>
+                <p class="plate__tag serif">Less, on purpose.</p>
+              </header>
+              <p class="plate__body">
+                Riders back from the war took their bikes apart and left the
+                excess on the garage floor. Fenders were “bobbed”, and anything
+                that didn’t make the machine faster or lighter was removed.
+                Today the bobber is the most honest silhouette in motorcycling:
+                one seat, one rider, nothing to apologise for.
+              </p>
+              <ul class="plate__notes" aria-label="Field notes for the bobber">
+                <li data-x="0.35" data-y="0.30">
+                  Solo saddle, floating over the frame
+                </li>
+                <li data-x="0.58" data-y="0.22">
+                  Blue tank — the only colour on a blacked-out build
+                </li>
+                <li data-x="0.13" data-y="0.42">
+                  Rear fender cut short, the namesake “bob”
+                </li>
+                <li data-x="0.85" data-y="0.72">Fat tyres on spoked wheels</li>
+              </ul>
+              <dl
+                class="plate__reading"
+                aria-label="Hardline reading, editorial opinion"
+              >
+                <div>
+                  <dt>Restraint</dt>
+                  <dd data-v="5"><span class="sr-only">5 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Pace</dt>
+                  <dd data-v="2"><span class="sr-only">2 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Grit</dt>
+                  <dd data-v="3"><span class="sr-only">3 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Spectacle</dt>
+                  <dd data-v="2"><span class="sr-only">2 of 5</span></dd>
+                </div>
+              </dl>
+            </article>
+
+            <article
+              class="plate"
+              data-plate="1"
+              data-src="media/caferacer.webp"
+              data-src-sm="media/caferacer-sm.webp"
+              data-aspect="1.5463"
+              data-name="CAFÉ RACER"
+            >
+              <img
+                class="plate__img"
+                src="media/caferacer.webp"
+                width="1469"
+                height="950"
+                loading="lazy"
+                alt="Plate 02, the café racer: a black and gold motorcycle with gold front forks, gold-laced wheels, a flat stitched seat and a belly pan under the engine."
+              />
+              <header class="plate__head">
+                <p class="plate__era mono">1960s Britain → now</p>
+                <h3 class="plate__name">Café Racer</h3>
+                <p class="plate__tag serif">
+                  Built for the sprint between coffees.
+                </p>
+              </header>
+              <p class="plate__body">
+                The rockers of 1960s Britain stripped their bikes, tucked in
+                behind low bars and raced from café to café. Everything about a
+                café racer leans forward, as if it is already late for something
+                it fully intends to win.
+              </p>
+              <ul
+                class="plate__notes"
+                aria-label="Field notes for the café racer"
+              >
+                <li data-x="0.50" data-y="0.30">
+                  Black tank, hand-lined in gold
+                </li>
+                <li data-x="0.78" data-y="0.40">Gold-finished front forks</li>
+                <li data-x="0.33" data-y="0.27">Short, flat, stitched seat</li>
+                <li data-x="0.52" data-y="0.76">
+                  Belly pan tucked under the engine
+                </li>
+              </ul>
+              <dl
+                class="plate__reading"
+                aria-label="Hardline reading, editorial opinion"
+              >
+                <div>
+                  <dt>Restraint</dt>
+                  <dd data-v="3"><span class="sr-only">3 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Pace</dt>
+                  <dd data-v="5"><span class="sr-only">5 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Grit</dt>
+                  <dd data-v="2"><span class="sr-only">2 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Spectacle</dt>
+                  <dd data-v="3"><span class="sr-only">3 of 5</span></dd>
+                </div>
+              </dl>
+            </article>
+
+            <article
+              class="plate"
+              data-plate="2"
+              data-src="media/tracker.webp"
+              data-src-sm="media/tracker-sm.webp"
+              data-aspect="1.4647"
+              data-name="TRACKER"
+            >
+              <img
+                class="plate__img"
+                src="media/tracker.webp"
+                width="1453"
+                height="992"
+                loading="lazy"
+                alt="Plate 03, the tracker: a green and white motorcycle with a number 75 race plate, a brown bench seat, an orange sprocket cover and knobbly off-road tyres."
+              />
+              <header class="plate__head">
+                <p class="plate__era mono">Dirt ovals → back streets</p>
+                <h3 class="plate__name">Tracker</h3>
+                <p class="plate__tag serif">Sideways is a direction.</p>
+              </header>
+              <p class="plate__body">
+                Born on flat-track ovals, where racers slide through corners on
+                loose dirt, the tracker borrows the racer’s number plates, wide
+                bars and long flat seat. It never fully commits to the tarmac,
+                and it doesn’t want to.
+              </p>
+              <ul class="plate__notes" aria-label="Field notes for the tracker">
+                <li data-x="0.24" data-y="0.48">
+                  Number 75 side plate, race-style
+                </li>
+                <li data-x="0.30" data-y="0.31">
+                  Long, flat, brown bench seat
+                </li>
+                <li data-x="0.40" data-y="0.62">Orange sprocket cover</li>
+                <li data-x="0.86" data-y="0.74">
+                  Knobbly tyres made for loose ground
+                </li>
+              </ul>
+              <dl
+                class="plate__reading"
+                aria-label="Hardline reading, editorial opinion"
+              >
+                <div>
+                  <dt>Restraint</dt>
+                  <dd data-v="2"><span class="sr-only">2 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Pace</dt>
+                  <dd data-v="3"><span class="sr-only">3 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Grit</dt>
+                  <dd data-v="5"><span class="sr-only">5 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Spectacle</dt>
+                  <dd data-v="3"><span class="sr-only">3 of 5</span></dd>
+                </div>
+              </dl>
+            </article>
+
+            <article
+              class="plate"
+              data-plate="3"
+              data-src="media/chopper.webp"
+              data-src-sm="media/chopper-sm.webp"
+              data-aspect="2.1220"
+              data-name="CHOPPER"
+            >
+              <img
+                class="plate__img"
+                src="media/chopper.webp"
+                width="1600"
+                height="754"
+                loading="lazy"
+                alt="Plate 04, the chopper: a long motorcycle with a stretched front fork, a tall sissy bar, a flame-painted orange tank and frame, and a chrome engine."
+              />
+              <header class="plate__head">
+                <p class="plate__era mono">California, late ’60s → now</p>
+                <h3 class="plate__name">Chopper</h3>
+                <p class="plate__tag serif">Practicality was never invited.</p>
+              </header>
+              <p class="plate__body">
+                Chop the frame, rake the neck, stretch the fork and paint it
+                like a sunset on fire. The chopper is motorcycling’s loudest
+                sentence. It is less a vehicle than a declaration that you were
+                never planning to blend in.
+              </p>
+              <ul class="plate__notes" aria-label="Field notes for the chopper">
+                <li data-x="0.70" data-y="0.45">
+                  Stretched, steeply raked front fork
+                </li>
+                <li data-x="0.07" data-y="0.16">
+                  Tall sissy bar behind the seat
+                </li>
+                <li data-x="0.44" data-y="0.20">
+                  Flame-painted tank in orange
+                </li>
+                <li data-x="0.36" data-y="0.62">
+                  Chrome engine, fully on show
+                </li>
+              </ul>
+              <dl
+                class="plate__reading"
+                aria-label="Hardline reading, editorial opinion"
+              >
+                <div>
+                  <dt>Restraint</dt>
+                  <dd data-v="1"><span class="sr-only">1 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Pace</dt>
+                  <dd data-v="1"><span class="sr-only">1 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Grit</dt>
+                  <dd data-v="2"><span class="sr-only">2 of 5</span></dd>
+                </div>
+                <div>
+                  <dt>Spectacle</dt>
+                  <dd data-v="5"><span class="sr-only">5 of 5</span></dd>
+                </div>
+              </dl>
+            </article>
+
+            <p class="stage__legend mono" aria-hidden="true">
+              Reading — editorial opinion, not factory data
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 — CULTURE ------------------------------------------------------>
+      <section
+        class="culture"
+        id="culture"
+        data-chapter="04"
+        data-chapter-name="Culture"
+        aria-labelledby="culture-title"
+      >
+        <div class="culture__pin">
+          <div class="culture__track">
+            <div class="panel panel--intro">
+              <p class="eyebrow mono">
+                <span class="eyebrow__n">04</span> The Culture
+              </p>
+              <h2 class="culture__title" id="culture-title">
+                Nobody builds a bike for <em class="serif">someone else.</em>
+              </h2>
+              <p class="panel__lead">
+                The machine is half of it. The rest is grease under fingernails,
+                strangers who nod, and a long argument with yourself about who
+                you want to be. That argument usually happens on a Sunday
+                morning, at speed.
+              </p>
+            </div>
+
+            <figure class="panel panel--img panel--garage">
+              <div class="panel__frame">
+                <img
+                  src="media/detail-tracker.webp"
+                  width="580"
+                  height="570"
+                  loading="lazy"
+                  alt="Close-up of the tracker’s green tank and exposed V-twin engine."
+                />
+              </div>
+              <figcaption>
+                <span class="panel__n mono">i — The Garage</span>
+                <h3>Every bolt is an opinion.</h3>
+                <p>
+                  Customisation isn’t decoration. It is the slow work of
+                  removing everything that isn’t you and replacing it with
+                  something that is.
+                </p>
+              </figcaption>
+            </figure>
+
+            <div class="panel panel--type">
+              <span class="panel__n mono">ii — The Road</span>
+              <p class="panel__huge">
+                The road doesn’t care who you are.
+                <em class="serif">That’s the point.</em>
+              </p>
+            </div>
+
+            <figure class="panel panel--img panel--pack">
+              <div class="panel__frame">
+                <img
+                  src="media/detail-cafe.webp"
+                  width="556"
+                  height="720"
+                  loading="lazy"
+                  alt="Close-up of the café racer’s gold front fork, headlight and front wheel."
+                />
+              </div>
+              <figcaption>
+                <span class="panel__n mono">iii — The Pack</span>
+                <h3>Two fingers off the bar.</h3>
+                <p>
+                  The nod passed between strangers on two wheels. You don’t know
+                  their name or their bike. You know they chose the same
+                  exposure you did.
+                </p>
+              </figcaption>
+            </figure>
+
+            <figure class="panel panel--img panel--mark">
+              <div class="panel__frame">
+                <img
+                  src="media/detail-tracker-plate.webp"
+                  width="420"
+                  height="350"
+                  loading="lazy"
+                  alt="Close-up of a green number 75 side plate beside an orange sprocket and gold chain."
+                />
+              </div>
+              <figcaption>
+                <span class="panel__n mono">iv — The Mark</span>
+                <h3>A number nobody issued.</h3>
+                <p>
+                  A colour. A scar on the tank. A plate with a number that means
+                  something to exactly one person. Identity, bolted on.
+                </p>
+              </figcaption>
+            </figure>
+
+            <figure class="panel panel--img panel--hands">
+              <div class="panel__frame">
+                <img
+                  src="media/detail-chopper.webp"
+                  width="590"
+                  height="570"
+                  loading="lazy"
+                  alt="Close-up of the chopper’s flame-painted orange frame and chrome engine."
+                />
+              </div>
+              <figcaption>
+                <span class="panel__n mono">v — The Hands</span>
+                <h3>Paint you can feel.</h3>
+                <p>
+                  Flames laid by a hand that shook only once, and only on
+                  purpose. Craft is the part of the machine that remembers a
+                  person made it.
+                </p>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="culture__road" aria-hidden="true"><span></span></div>
+        </div>
+      </section>
+
+      <!-- 05 — FINALE -------------------------------------------------------->
+      <section
+        class="finale"
+        id="finale"
+        data-chapter="05"
+        data-chapter-name="The Line"
+        aria-labelledby="finale-title"
+      >
+        <div class="finale__pin">
+          <p class="finale__pre mono" data-finale="a">05 — The Line</p>
+          <p class="finale__lead" data-finale="b">
+            Every machine in this study was built by someone who refused the
+            default.
+          </p>
+          <h2 class="finale__title" id="finale-title" data-finale="c">
+            <span class="finale__l1">Ride your</span>
+            <span class="finale__l2"><em class="serif">own</em> line.</span>
+          </h2>
+          <span class="finale__line" aria-hidden="true"></span>
+          <img
+            class="finale__fallback"
+            src="media/bobber-sm.webp"
+            width="800"
+            height="401"
+            alt=""
+            loading="lazy"
+          />
+        </div>
+      </section>
+
+      <footer class="colophon">
+        <div class="colophon__grid wrap">
+          <p class="colophon__mark">Hardline</p>
+          <div class="colophon__col">
+            <p class="mono colophon__h">Chapters</p>
+            <ul>
+              <li><a href="#top">01 Hardline</a></li>
+              <li><a href="#philosophy">02 Philosophy</a></li>
+              <li><a href="#ways">03 Four Ways</a></li>
+              <li><a href="#culture">04 Culture</a></li>
+            </ul>
+          </div>
+          <div class="colophon__col">
+            <p class="mono colophon__h">Colophon</p>
+            <p>
+              An experimental exhibition. Set in Archivo, Instrument Serif and
+              JetBrains Mono. Field notes describe only what is visible in each
+              photograph; readings are editorial opinion.
+            </p>
+          </div>
+          <button class="colophon__top" type="button" data-to-top>
+            <span class="mono">Back to ignition</span
+            ><span class="colophon__arrow" aria-hidden="true">↑</span>
+          </button>
+        </div>
+        <p class="colophon__base mono wrap">
+          <span>© 2026 Hardline — A case study of bikes</span
+          ><span>Built, not bought.</span>
+        </p>
+      </footer>
+    </main>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

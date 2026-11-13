@@ -1,0 +1,151 @@
+/* ==========================================================================
+   04 CULTURE — horizontal road
+   ========================================================================== */
+.culture { position: relative; background: var(--oil); }
+.culture__pin { position: relative; height: 100vh; height: 100svh; overflow: clip; }
+.culture__track {
+  position: relative; z-index: 1;
+  display: flex; align-items: stretch; height: 100%;
+  width: max-content;
+  padding: calc(var(--bar-h) + var(--s-3)) var(--gutter) 18vh;
+  gap: clamp(3rem, 7vw, 9rem);
+  will-change: transform;
+}
+.panel { flex: none; display: flex; flex-direction: column; justify-content: center; }
+.panel--intro { width: min(46vw, 820px); justify-content: center; }
+.culture__title {
+  margin-top: var(--s-3);
+  font-size: var(--t-h2); line-height: 0.95;
+  font-weight: 800; font-stretch: 72%; text-transform: uppercase; letter-spacing: -0.02em;
+}
+.culture__title .serif { text-transform: none; color: var(--ignition); }
+.panel__lead { margin-top: var(--s-3); max-width: 44ch; color: var(--ash); font-size: var(--t-lead); line-height: 1.4; }
+
+.panel--img { width: clamp(300px, 30vw, 560px); gap: var(--s-2); justify-content: flex-start; }
+.panel--img:nth-of-type(even) { justify-content: flex-end; }
+.panel__frame { position: relative; overflow: clip; height: 46vh; background: var(--soot); }
+.panel__frame img {
+  position: absolute; inset: 0 -12%; width: 124%; height: 100%; max-width: none;
+  object-fit: cover; will-change: transform;
+}
+.panel figcaption h3 {
+  font-size: clamp(1.6rem, 1rem + 1.6vw, 2.8rem); line-height: 0.95;
+  font-weight: 800; font-stretch: 80%; text-transform: uppercase; letter-spacing: -0.01em;
+  margin: 0.5rem 0 0.7rem;
+}
+.panel figcaption p { color: var(--ash); max-width: 38ch; font-size: 0.975rem; }
+.panel__n { color: var(--ignition); }
+
+.panel--type { width: min(64vw, 1100px); }
+.panel__huge {
+  margin-top: var(--s-2);
+  font-size: clamp(2.6rem, 1rem + 6vw, 8.5rem); line-height: 0.92;
+  font-weight: 850; font-stretch: 62%; text-transform: uppercase; letter-spacing: -0.015em;
+}
+.panel__huge .serif { text-transform: none; color: var(--ignition); display: block; font-size: 0.9em; margin-top: 0.15em; }
+
+.culture__road {
+  position: absolute; left: 0; right: 0; bottom: 9vh; height: 2px; overflow: clip;
+}
+.culture__road::before { content: ''; position: absolute; inset: 0; background: var(--iron); }
+.culture__road span {
+  position: absolute; top: 0; left: 0; height: 100%; width: 300%;
+  background: repeating-linear-gradient(90deg, var(--ignition) 0 64px, transparent 64px 128px);
+  will-change: transform;
+}
+
+/* vertical sequence on small screens / reduced motion */
+@media (max-width: 899px) {
+  .culture__pin { height: auto; overflow: visible; }
+  .culture__track { flex-direction: column; width: auto; height: auto; padding: var(--s-5) var(--gutter) var(--s-4); gap: var(--s-4); }
+  .panel--intro, .panel--img, .panel--type { width: auto; }
+  .panel--img:nth-of-type(even) { padding-left: 18%; }
+  .panel__frame { height: 62vw; max-height: 520px; }
+  .culture__road { display: none; }
+}
+html.reduced-motion .culture__pin { height: auto; overflow: visible; }
+html.reduced-motion .culture__track { flex-direction: column; width: auto; height: auto; padding: var(--s-5) var(--gutter) var(--s-4); gap: var(--s-4); }
+html.reduced-motion .panel--intro, html.reduced-motion .panel--img, html.reduced-motion .panel--type { width: auto; max-width: 900px; }
+html.reduced-motion .culture__road { display: none; }
+
+/* ==========================================================================
+   05 FINALE — dust becomes machine, machine becomes dust
+   ========================================================================== */
+.finale { position: relative; height: 320vh; }
+.finale__pin {
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: clip;
+  display: grid; grid-template-rows: 1fr auto;
+  padding: calc(var(--bar-h) + var(--s-2)) var(--gutter) var(--s-4);
+}
+.finale__pre { position: absolute; left: var(--gutter); top: calc(var(--bar-h) + var(--s-2)); color: var(--ash); }
+.finale__lead {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(90vw, 28ch); text-align: center;
+  font-family: var(--f-human); font-style: italic; font-size: clamp(1.6rem, 1rem + 2.2vw, 3.4rem); line-height: 1.08;
+  text-shadow: 0 2px 30px rgba(11,10,9,0.9);
+}
+.finale__title {
+  grid-row: 2; position: relative; z-index: 1;
+  font-size: clamp(3.4rem, 0.5rem + 12.5vw, 16rem); line-height: 0.82;
+  font-weight: 850; font-stretch: 70%; text-transform: uppercase; letter-spacing: -0.02em;
+}
+.finale__title > span { display: block; overflow: clip; padding-bottom: 0.04em; }
+.finale__l2 { padding-left: 18vw; }
+.finale__l2 .serif { text-transform: none; color: var(--ignition); font-size: 1.05em; padding-right: 0.08em; }
+.finale__line {
+  position: absolute; left: 0; right: 0; bottom: calc(var(--s-4) - 1.2rem); height: 2px;
+  background: var(--ignition); transform-origin: 0 50%; transform: scaleX(0);
+}
+.finale__fallback {
+  position: absolute; left: 50%; top: 40%; width: min(70vw, 900px); transform: translate(-50%, -50%);
+  opacity: 0.85; filter: grayscale(1) contrast(1.1);
+  display: none;
+}
+html.no-webgl .finale__fallback, html.gl-off .finale__fallback { display: block; }
+html.reduced-motion .finale { height: auto; }
+html.reduced-motion .finale__pin { position: relative; min-height: 100svh; height: auto; }
+html.reduced-motion .finale__line { transform: none; }
+
+@media (max-width: 767px) {
+  .finale__l2 { padding-left: 0; }
+  .finale__lead { top: 62%; }
+}
+
+/* ==========================================================================
+   Colophon
+   ========================================================================== */
+.colophon { position: relative; background: var(--oil); border-top: 1px solid var(--iron); padding-top: var(--s-4); }
+.colophon__grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--s-2); row-gap: var(--s-3); }
+.colophon__mark {
+  grid-column: 1 / span 5;
+  font-size: clamp(2.4rem, 1rem + 4vw, 5rem); line-height: 0.85;
+  font-weight: 850; font-stretch: 125%; text-transform: uppercase;
+}
+.colophon__col { grid-column: span 3; color: var(--ash); font-size: 0.95rem; }
+.colophon__col li a { display: inline-block; padding-block: 0.35rem; color: var(--bone); transition: color 0.3s; }
+.colophon__col li a:hover { color: var(--ignition); }
+.colophon__h { color: var(--ignition); margin-bottom: 0.8rem; }
+.colophon__top {
+  grid-column: span 1; justify-self: end; align-self: start;
+  display: inline-flex; flex-direction: column; align-items: flex-end; gap: 0.4rem;
+  min-height: 44px; text-align: right;
+}
+.colophon__arrow { font-size: 2.2rem; line-height: 1; transition: transform 0.5s var(--ease-out); }
+.colophon__top:hover .colophon__arrow { transform: translateY(-8px); }
+.colophon__base {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  margin-top: var(--s-4); padding-block: var(--s-2) calc(var(--s-2) + 4px);
+  border-top: 1px solid var(--iron); color: var(--ash);
+}
+@media (max-width: 899px) {
+  .colophon__grid { grid-template-columns: 1fr 1fr; }
+  .colophon__mark { grid-column: 1 / -1; }
+  .colophon__col { grid-column: span 1; }
+  .colophon__top { grid-column: 1 / -1; justify-self: start; align-items: flex-start; text-align: left; }
+}
+@media (max-width: 479px) {
+  .colophon__grid { grid-template-columns: 1fr; }
+  .colophon__col { grid-column: 1; }
+}

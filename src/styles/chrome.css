@@ -1,0 +1,115 @@
+/* ==========================================================================
+   Loader / navigation bar / index overlay
+   ========================================================================== */
+
+/* --- 00 Ignition ------------------------------------------------------- */
+.loader {
+  position: fixed; inset: 0; z-index: 150;
+  display: grid; grid-template-rows: auto 1fr auto auto;
+  padding: var(--s-2) var(--gutter);
+  background: var(--oil); color: var(--bone);
+  clip-path: inset(0 0 0 0);
+}
+html:not(.js) .loader { display: none; }
+.loader__top, .loader__bottom {
+  display: flex; justify-content: space-between;
+  font-family: var(--f-tech); font-size: var(--t-micro);
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--ash);
+}
+.loader__count {
+  align-self: end; display: flex; align-items: flex-start;
+  font-weight: 800; font-stretch: 62%; line-height: 0.8;
+  font-size: clamp(6rem, 3rem + 18vw, 22rem);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  padding-bottom: var(--s-2);
+}
+.loader__unit { font-size: 0.25em; font-stretch: 100%; color: var(--ignition); margin-left: 0.15em; }
+.loader__gauge { height: 2px; background: var(--iron); margin-bottom: var(--s-2); }
+.loader__fill { display: block; height: 100%; background: var(--ignition); transform-origin: 0 50%; transform: scaleX(0); }
+
+/* --- Bar ------------------------------------------------------------------ */
+.bar {
+  position: fixed; inset: 0 0 auto 0; z-index: 120;
+  height: var(--bar-h);
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding-inline: var(--gutter);
+  color: var(--bone);
+  mix-blend-mode: difference;           /* legible on cream smoke and black night alike */
+  pointer-events: none;
+}
+.bar > * { pointer-events: auto; }
+.bar__mark {
+  justify-self: start; display: inline-flex; align-items: center; gap: 0.7rem;
+  min-height: 44px;
+  font-weight: 800; font-stretch: 125%; text-transform: uppercase;
+  letter-spacing: 0.04em; font-size: 0.95rem;
+}
+.bar__glyph { width: 1.6rem; height: 2px; background: currentColor; }
+.bar__chapter {
+  display: flex; gap: 0.8rem; align-items: center;
+  font-family: var(--f-tech); font-size: var(--t-micro);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.bar__name-wrap { display: inline-block; overflow: clip; height: 1.5em; }
+.bar__name { display: inline-block; }
+.bar__menu {
+  justify-self: end; display: inline-flex; align-items: center; gap: 0.8rem;
+  min-height: 44px; min-width: 44px; padding-inline: 0.25rem;
+  font-family: var(--f-tech); font-size: var(--t-micro);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.bar__menu-icon { position: relative; width: 26px; height: 10px; }
+.bar__menu-icon i {
+  position: absolute; left: 0; right: 0; height: 2px; background: currentColor;
+  transition: transform 0.6s var(--ease-cut);
+}
+.bar__menu-icon i:first-child { top: 0; }
+.bar__menu-icon i:last-child { bottom: 0; }
+.bar__menu[aria-expanded='true'] .bar__menu-icon i:first-child { transform: translateY(4px) rotate(45deg); }
+.bar__menu[aria-expanded='true'] .bar__menu-icon i:last-child { transform: translateY(-4px) rotate(-45deg); }
+
+@media (max-width: 767px) {
+  .bar__chapter { display: none; }
+  .bar { grid-template-columns: 1fr 1fr; }
+}
+
+/* --- Index overlay (pattern adapted from 21st.dev #27229, rebuilt in vanilla) */
+.index {
+  position: fixed; inset: 0; z-index: 110;
+  background: var(--soot);
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  visibility: hidden;
+  overflow-y: auto;
+}
+.index.is-open { visibility: visible; }
+.index__inner {
+  min-height: 100%;
+  display: grid; grid-template-rows: auto 1fr auto; gap: var(--s-3);
+  padding: calc(var(--bar-h) + var(--s-3)) var(--gutter) var(--s-3);
+}
+.index__eyebrow { color: var(--ash); }
+.index__list { align-self: center; display: grid; }
+.index__list li { border-top: 1px solid var(--iron); overflow: clip; }
+.index__list li:last-child { border-bottom: 1px solid var(--iron); }
+.index__list a {
+  display: flex; align-items: baseline; gap: var(--s-3);
+  padding-block: clamp(0.4rem, 1.2vh, 1rem);
+  font-weight: 800; text-transform: uppercase; line-height: 0.95;
+  font-size: min(clamp(2.6rem, 1rem + 6.4vw, 8.5rem), 10.5vh);
+  font-stretch: 75%;
+  transition: font-stretch 0.6s var(--ease-out), color 0.3s;
+}
+.index__list a:hover,
+.index__list a:focus-visible { font-stretch: 92%; color: var(--ignition); }
+.index__n { color: var(--ash); transform: translateY(-0.4em); align-self: flex-start; padding-top: 0.6em; }
+.index__t { display: inline-block; }
+.index__foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; color: var(--ash); }
+
+/* char-roll (from the 21st.dev reference): glyph slides up, its shadow copy follows */
+.index__t { overflow: clip; line-height: 1; padding-block: 0.02em; }
+.index__t .roll {
+  display: inline-block; text-shadow: 0 1.1em currentColor;
+  transition: transform 0.6s cubic-bezier(0.625, 0.05, 0, 1);
+}
+.index__list a:hover .roll,
+.index__list a:focus-visible .roll { transform: translateY(-1.1em); }

@@ -1,0 +1,190 @@
+/* ==========================================================================
+   03 FOUR WAYS TO RIDE — the plate stage
+   ========================================================================== */
+.ways { position: relative; }
+.ways__intro {
+  background: var(--oil);
+  padding-top: var(--s-5); padding-bottom: var(--s-4);
+  display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--s-2);
+}
+.ways__intro .eyebrow { grid-column: 1 / -1; }
+.ways__title {
+  grid-column: 1 / span 9; margin-top: var(--s-3);
+  font-size: var(--t-h2); line-height: 0.95;
+  font-weight: 800; font-stretch: 75%; text-transform: uppercase; letter-spacing: -0.02em;
+}
+.ways__title .serif { text-transform: none; color: var(--ignition); font-size: 1.1em; }
+.ways__how { grid-column: 9 / span 4; align-self: end; margin-top: var(--s-3); padding-left: 1.2rem; border-left: 2px solid var(--ignition); color: var(--ash); max-width: 40ch; font-size: 0.95rem; line-height: 1.6; }
+
+/* --- the stage ---------------------------------------------------------- */
+.stage__pin {
+  position: relative;
+  height: 100vh; height: 100svh;
+  overflow: clip;
+  /* bike box: where the machine sits. Read by JS for WebGL + markers. */
+  --bx-l: 29vw; --bx-r: 25vw; --bx-t: 26vh; --bx-b: 22vh;
+}
+html.no-webgl .stage__pin,
+html.gl-off .stage__pin { background: var(--oil); }
+
+.stage__bikebox {
+  position: absolute; pointer-events: none;
+  left: var(--bx-l); right: var(--bx-r); top: var(--bx-t); bottom: var(--bx-b);
+}
+
+.stage__top {
+  position: absolute; z-index: 3; left: var(--gutter); right: var(--gutter);
+  top: calc(var(--bar-h) + 0.5rem);
+  display: flex; justify-content: space-between; align-items: center; gap: var(--s-2);
+}
+.stage__count { color: var(--ash); }
+.stage__cur { color: var(--bone); }
+.stage__tabs { display: flex; gap: 0.25rem; }
+.stage__tab {
+  position: relative; min-height: 44px; padding: 0 0.9rem;
+  font-family: var(--f-tech); font-size: var(--t-micro); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ash); transition: color 0.3s;
+}
+.stage__tab::after {
+  content: ''; position: absolute; left: 0.9rem; right: 0.9rem; bottom: 8px; height: 2px;
+  background: var(--ignition); transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform 0.6s var(--ease-cut);
+}
+.stage__tab:hover { color: var(--bone); }
+.stage__tab.is-active { color: var(--bone); }
+.stage__tab.is-active::after { transform: scaleX(1); }
+
+/* plates are stacked; only the active one is opaque, all stay in the a11y tree */
+.plate {
+  position: absolute; inset: 0; z-index: 2;
+  opacity: 0; pointer-events: none;
+}
+.plate.is-active { opacity: 1; }
+.plate__img {
+  position: absolute;
+  left: var(--bx-l); right: var(--bx-r); top: var(--bx-t); bottom: var(--bx-b);
+  width: calc(100% - var(--bx-l) - var(--bx-r)); height: calc(100% - var(--bx-t) - var(--bx-b));
+  max-width: none; object-fit: contain; object-position: 50% 100%;
+}
+html.gl-plates .plate__img { opacity: 0; }
+
+.plate__head {
+  position: absolute; left: var(--gutter); top: 24vh; width: min(27vw, 520px);
+}
+.plate__era { color: var(--ignition); }
+.plate__name {
+  margin-top: 0.4rem;
+  font-size: var(--t-h3); line-height: 0.85;
+  font-weight: 850; font-stretch: 80%; text-transform: uppercase; letter-spacing: -0.02em;
+}
+.plate__tag { font-size: clamp(1.3rem, 1rem + 0.9vw, 2.1rem); line-height: 1.05; margin-top: 0.6rem; }
+.plate__body {
+  position: absolute; left: var(--gutter); bottom: 12vh; width: min(24vw, 400px);
+  color: var(--ash); font-size: 0.95rem; line-height: 1.6;
+}
+
+.plate__notes {
+  position: absolute; right: var(--gutter); top: 24vh; width: min(21vw, 360px);
+  counter-reset: note;
+}
+.plate__notes li {
+  counter-increment: note; position: relative;
+  padding: 0.7rem 0 0.7rem 2.6rem;
+  border-top: 1px solid var(--iron);
+  font-size: 0.95rem; line-height: 1.35;
+}
+.plate__notes li:last-child { border-bottom: 1px solid var(--iron); }
+.plate__notes li::before {
+  content: counter(note, decimal-leading-zero);
+  position: absolute; left: 0; top: 0.85rem;
+  font-family: var(--f-tech); font-size: var(--t-micro); color: var(--ignition);
+}
+
+.plate__reading {
+  position: absolute; right: var(--gutter); bottom: 12vh; width: min(21vw, 360px);
+  display: grid; gap: 0.55rem;
+}
+.plate__reading div { display: grid; grid-template-columns: 6.5rem 1fr; align-items: center; gap: 1rem; }
+.plate__reading dt { font-family: var(--f-tech); font-size: var(--t-micro); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ash); }
+.plate__reading dd { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; height: 10px; }
+.plate__reading dd i { display: block; background: var(--iron); position: relative; overflow: hidden; }
+.plate__reading dd i b { position: absolute; inset: 0; background: var(--bone); transform-origin: 0 50%; }
+.plate__reading dd i.is-hot b { background: var(--ignition); }
+
+.stage__legend {
+  position: absolute; z-index: 3; right: var(--gutter); bottom: calc(12vh - 2.4rem);
+  width: min(21vw, 360px); color: var(--ash); font-size: 0.6875rem; opacity: 0.75;
+}
+
+/* markers + leader lines (built in JS) */
+.plate__marks { position: absolute; inset: 0; pointer-events: none; }
+.plate__leaders { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.plate__leaders path { fill: none; stroke: rgba(236, 230, 218, 0.32); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.mark {
+  position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px;
+  display: grid; place-items: center;
+  border: 1px solid var(--ignition); border-radius: 50%;
+  background: rgba(11, 10, 9, 0.7);
+  font-family: var(--f-tech); font-size: 10px; color: var(--bone);
+}
+.mark::after { content: ''; position: absolute; width: 4px; height: 4px; border-radius: 50%; background: var(--ignition); transform: translate(0, 0); opacity: 0; }
+
+/* --- tall tablets: stacked composition ----------------------------------- */
+@media (min-width: 768px) and (max-aspect-ratio: 1/1) {
+  .stage__pin { --bx-l: var(--gutter); --bx-r: var(--gutter); --bx-t: 41vh; --bx-b: 33vh; }
+  .plate__head { top: 15vh; width: 44vw; }
+  .plate__body { top: 17vh; bottom: auto; left: auto; right: var(--gutter); width: 44vw; }
+  .plate__notes { top: auto; bottom: 7vh; left: var(--gutter); right: auto; width: 46vw; }
+  .plate__reading { bottom: 9vh; width: 40vw; }
+  .stage__legend { bottom: calc(9vh - 2.2rem); width: 40vw; }
+}
+/* --- short laptops ---------------------------------------------------------- */
+@media (min-width: 768px) and (min-aspect-ratio: 1/1) and (max-height: 820px) {
+  .plate__head, .plate__notes { top: 21vh; }
+  .plate__body { bottom: 9vh; font-size: 0.875rem; }
+  .plate__notes li { padding-block: 0.5rem; font-size: 0.875rem; }
+  .plate__reading { bottom: 10vh; }
+  .stage__legend { bottom: calc(10vh - 2.2rem); }
+}
+
+/* --- phones / reduced motion: an editorial sequence, no pin -------------- */
+@media (max-width: 767px) {
+  .ways__title, .ways__how { grid-column: 1 / -1; }
+}
+@media (max-width: 767px) {
+  .stage__pin { height: auto; overflow: visible; }
+  .stage__top { display: none; }
+  .stage__bikebox, .plate__marks { display: none; }
+  .plate {
+    position: relative; inset: auto; opacity: 1; pointer-events: auto;
+    display: grid; gap: var(--s-2);
+    padding: var(--s-4) var(--gutter);
+    border-top: 1px solid var(--iron);
+  }
+  .plate__img { position: static; width: 100%; height: auto; order: 2; opacity: 1 !important; }
+  .plate__head { position: static; width: auto; order: 1; }
+  .plate__body, .plate__notes, .plate__reading { position: static; width: auto; }
+  .plate__body { order: 3; }
+  .plate__notes { order: 4; }
+  .plate__reading { order: 5; }
+  .stage__legend { position: static; width: auto; padding: 0 var(--gutter) var(--s-4); }
+}
+html.reduced-motion .stage__pin { height: auto; overflow: visible; }
+html.reduced-motion .stage__top, html.reduced-motion .plate__marks { display: none; }
+html.reduced-motion .plate {
+  position: relative; inset: auto; opacity: 1; display: grid; gap: var(--s-2);
+  grid-template-columns: repeat(12, 1fr); padding: var(--s-4) var(--gutter); border-top: 1px solid var(--iron);
+}
+html.reduced-motion .plate__img { position: static; grid-column: 1 / -1; width: 100%; height: auto; max-height: 70vh; }
+html.reduced-motion .plate__head,
+html.reduced-motion .plate__body,
+html.reduced-motion .plate__notes,
+html.reduced-motion .plate__reading { position: static; width: auto; grid-column: span 6; }
+html.reduced-motion .stage__legend { position: static; width: auto; padding: 0 var(--gutter) var(--s-4); }
+@media (max-width: 767px) {
+  html.reduced-motion .plate { grid-template-columns: 1fr; }
+  html.reduced-motion .plate > * { grid-column: 1 !important; }
+}
+
+/* give accents (É) headroom inside the per-character masks */
+.plate__name .c-mask { padding-top: 0.22em; margin-top: -0.22em; }
